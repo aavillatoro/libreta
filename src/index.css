@@ -3,35 +3,110 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+.double-underline {
+  border-bottom: 5px double theme('colors.ink');
+  padding-bottom: 2px;
+}
+
+.date-stamp {
+  @apply inline-block border-2 border-dashed border-soft/50 rounded-md px-2 py-0.5 text-sm font-bold tracking-wide text-soft uppercase;
+  transform: rotate(-2deg);
+}
+
+/* moni */
+.moni {
+  position: relative;
+  width: 7.5rem;
+  height: 7.5rem;
+  flex-shrink: 0;
+}
+.moni img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+}
+.moni img.on {
+  opacity: 1;
+}
+.moni-body {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 85%;
+}
+.moni-idle .moni-body {
+  animation: moni-bob 3s ease-in-out infinite;
+}
+.moni-listening .moni-body {
+  animation: moni-tilt 2.4s ease-in-out infinite;
+}
+.moni-talking .moni-body {
+  animation: moni-bob 0.9s ease-in-out infinite;
+}
+.moni-celebrating .moni-body {
+  animation: moni-bounce 0.6s ease-out 2;
+}
+.moni-listening::before {
+  content: '';
+  position: absolute;
+  inset: 18%;
+  border-radius: 9999px;
+  background: theme('colors.mustard.DEFAULT');
+  animation: moni-pulse 1.8s ease-out infinite;
+}
+
+@keyframes moni-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes moni-tilt {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(-8deg) translateY(-2px); }
+}
+@keyframes moni-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-16px) scale(1.04, 0.97); }
+  70% { transform: translateY(0) scale(0.97, 1.04); }
+}
+@keyframes moni-pulse {
+  0% { transform: scale(0.8); opacity: 0.35; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* new ledger rows */
+.row-fresh {
+  animation: row-in 0.5s ease-out both;
+}
+.anotado {
+  @apply absolute border-2 border-sale text-sale font-bold uppercase tracking-widest text-xs rounded px-2 py-0.5 bg-card/80 pointer-events-none;
+  right: 38%;
+  top: 50%;
+  animation: stamp 4s ease-out both;
+}
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(-14px); background: theme('colors.mustard.light'); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes stamp {
+  0% { opacity: 0; transform: translateY(-50%) rotate(-8deg) scale(1.8); }
+  8% { opacity: 1; transform: translateY(-50%) rotate(-8deg) scale(1); }
+  85% { opacity: 1; transform: translateY(-50%) rotate(-8deg) scale(1); }
+  100% { opacity: 0; transform: translateY(-50%) rotate(-8deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moni-body, .moni-listening::before, .row-fresh {
+    animation: none !important;
   }
-  body {
-    @apply bg-background text-foreground antialiased;
+  .anotado {
+    animation: none;
+    transform: translateY(-50%) rotate(-8deg);
   }
 }
