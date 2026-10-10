@@ -1,14 +1,31 @@
 const CATEGORIES = {
   productos: 'Products',
+  servicios: 'Services',
   materiales: 'Materials and ingredients',
   insumos: 'Supplies',
   transporte: 'Transportation',
+  renta: 'Rent',
+  equipo: 'Equipment',
   otros: 'Other',
+  // names moni used before the current list
+  ingredientes: 'Materials and ingredients',
+  comida: 'Products',
+  bebidas: 'Products',
 };
 
 export const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
 export const categoryLabel = (category) => CATEGORIES[category?.toLowerCase()] ?? capitalize(category ?? 'Other');
+
+// two spanish categories can share an english name; show them as one line
+export function byCategoryLabel(lines) {
+  const merged = new Map();
+  for (const line of lines) {
+    const label = categoryLabel(line.label);
+    merged.set(label, (merged.get(label) ?? 0) + line.amount_cents);
+  }
+  return [...merged].map(([label, amount_cents]) => ({ label, amount_cents })).sort((a, b) => b.amount_cents - a.amount_cents);
+}
 
 const parts = (date) => {
   const [year, month, day] = date.split('-').map(Number);

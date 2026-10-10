@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CalendarDays, Check, ChevronLeft, Download, Home, Landmark } from 'lucide-react';
 import { entryTime, fetchStatement, money } from '@/lib/ledger';
-import { capitalize, categoryLabel, longDate, nextMonthName, periodLabel, shortDate } from '@/lib/statement';
+import { byCategoryLabel, capitalize, categoryLabel, longDate, nextMonthName, periodLabel, shortDate } from '@/lib/statement';
 
 const PURPOSES = [
   { period: '1m', title: 'Un préstamo', range: 'Último mes', Icon: Landmark },
@@ -30,7 +30,7 @@ function Lines({ heading, lines, total, totalLabel }) {
 function Summary({ statement }) {
   const { vendor, period, totals, first_entry_date: firstEntry } = statement;
   const income = statement.income.map((line) => ({ ...line, label: capitalize(line.label) }));
-  const expenses = statement.expenses.map((line) => ({ ...line, label: categoryLabel(line.label) }));
+  const expenses = byCategoryLabel(statement.expenses);
   return (
     <article className="sheet">
       <h2 className="font-serif font-semibold text-2xl">Profit and Loss Statement</h2>
