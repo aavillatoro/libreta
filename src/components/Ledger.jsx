@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { dateLabel, entryTime, money } from '@/lib/ledger';
 
 function Row({ entry, fresh }) {
@@ -5,7 +6,7 @@ function Row({ entry, fresh }) {
   return (
     <li className={`relative flex items-stretch border-b border-rule last:border-b-0 ${fresh ? 'row-fresh' : ''}`}>
       <span className="w-20 shrink-0 flex items-center justify-center font-mono text-sm text-soft border-r-2 border-margin">
-        {entryTime(entry.created_date)}
+        {entryTime(entry.logged_at)}
       </span>
       <div className="flex-1 min-w-0 px-3 py-4">
         <p className="text-lg font-bold leading-tight first-letter:uppercase">
@@ -66,17 +67,27 @@ export function TodayLedger({ today, entries, freshIds }) {
 }
 
 export function EarlierLedger({ today, entries, freshIds }) {
+  const [shown, setShown] = useState(7);
   const days = [...byDate(entries.filter((e) => e.date !== today))];
   if (days.length === 0) return null;
   return (
     <section className="space-y-5">
       <h2 className="font-serif font-semibold text-2xl">Días anteriores</h2>
-      {days.map(([date, list]) => (
+      {days.slice(0, shown).map(([date, list]) => (
         <div key={date}>
           <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-soft">{dateLabel(date)}</h3>
           <Page entries={list} freshIds={freshIds} />
         </div>
       ))}
+      {days.length > shown && (
+        <button
+          type="button"
+          onClick={() => setShown(shown + 14)}
+          className="w-full rounded-2xl border-2 border-ink py-4 text-lg font-bold"
+        >
+          Ver más días
+        </button>
+      )}
     </section>
   );
 }

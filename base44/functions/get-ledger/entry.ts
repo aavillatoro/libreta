@@ -1,5 +1,5 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.53";
-import { findVendor, listEntries, newYorkDate, sumEntries } from "../../shared/ledger.ts";
+import { findVendor, listEntries, loggedAt, newYorkDate, sumEntries } from "../../shared/ledger.ts";
 
 // called by the web page; the vendor's private token is the only key
 export default async function (req: Request): Promise<Response> {
@@ -13,8 +13,8 @@ export default async function (req: Request): Promise<Response> {
 
     const today = newYorkDate();
     const all = await listEntries(base44, vendor.id);
-    // newest day first; the sort is stable, so newest entry stays first within a day
-    all.sort((a: any, b: any) => b.date.localeCompare(a.date));
+    // newest day first, newest entry first within a day
+    all.sort((a: any, b: any) => b.date.localeCompare(a.date) || loggedAt(b).localeCompare(loggedAt(a)));
 
     return Response.json({
       vendor: { business_name: vendor.business_name, owner_name: vendor.owner_name ?? null },
@@ -31,7 +31,7 @@ export default async function (req: Request): Promise<Response> {
         quantity: e.quantity ?? null,
         amount_cents: e.amount_cents,
         date: e.date,
-        created_date: e.created_date,
+        logged_at: loggedAt(e),
       })),
     });
   } catch (error) {

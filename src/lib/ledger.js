@@ -20,6 +20,12 @@ export async function fetchLedger(token) {
   }
 }
 
+// period: 1m | 3m | 12m
+export async function fetchStatement(token, period) {
+  const { data } = await base44.functions.invoke('get-statement', { user_token: token, period });
+  return data;
+}
+
 const dollars = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
 export const money = (cents) => dollars.format(cents / 100);
@@ -30,11 +36,7 @@ const clock = new Intl.DateTimeFormat('en-GB', {
   minute: '2-digit',
 });
 
-// base44 timestamps are utc without a zone suffix
-export function entryTime(createdDate) {
-  const iso = /Z|[+-]\d\d:?\d\d$/.test(createdDate) ? createdDate : `${createdDate}Z`;
-  return clock.format(new Date(iso));
-}
+export const entryTime = (loggedAt) => clock.format(new Date(loggedAt));
 
 const dayLabel = new Intl.DateTimeFormat('es', {
   timeZone: 'UTC',

@@ -31,6 +31,11 @@
       "type": "string",
       "format": "date",
       "description": "Day the sale or expense happened, New York time"
+    },
+    "logged_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Only set on seeded sample entries; real entries use created_date"
     }
   },
   "required": ["vendor_id", "type", "item", "amount_cents", "date"],

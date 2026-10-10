@@ -33,6 +33,12 @@ export async function listEntries(base44: any, vendorId: string, extra: Record<s
   return await base44.asServiceRole.entities.Entry.filter({ vendor_id: vendorId, ...extra }, "-created_date", 5000);
 }
 
+// seeded sample entries carry their own time; base44's created_date is utc without a zone suffix
+export function loggedAt(entry: any): string {
+  const at = entry.logged_at ?? entry.created_date;
+  return /Z|[+-]\d\d:?\d\d$/.test(at) ? at : `${at}Z`;
+}
+
 export function sumEntries(entries: any[]) {
   let sales = 0;
   let expenses = 0;

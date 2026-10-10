@@ -18,6 +18,38 @@
   transform: rotate(-2deg);
 }
 
+.sheet {
+  @apply bg-white border border-line rounded-md shadow-md px-6 py-6;
+}
+
+@media print {
+  @page {
+    margin: 18mm;
+  }
+  body {
+    background: white;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .no-print,
+  #base44-edit-badge {
+    display: none !important;
+  }
+  .sheet {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+  .appendix {
+    break-before: page;
+  }
+  .appendix tr {
+    break-inside: avoid;
+  }
+}
+
 /* moni */
 .moni {
   position: relative;
