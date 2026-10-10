@@ -1,23 +1,9 @@
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.53";
-import { secrets } from "base44:runtime";
-
-// vendors are in new york; the server clock is utc
-function newYorkDate(when: string): string {
-  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
-  if (when !== "yesterday") return today;
-  const d = new Date(`${today}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() - 1);
-  return d.toISOString().slice(0, 10);
-}
-
-function toCents(dollars: unknown): number {
-  return Math.round(Number(dollars) * 100);
-}
+import { findVendor, formatDollars, hasMoniSecret, newYorkDate, toCents } from "../../shared/ledger.ts";
 
 export default async function (req: Request): Promise<Response> {
   try {
-    const secret = secrets.get("MONI_SECRET");
-    if (!secret || req.headers.get("x-moni-secret") !== secret) {
+    if (!hasMoniSecret(req)) {
       return Response.json({ error: "unauthorized" }, { status: 401 });
     }
 
@@ -53,13 +39,13 @@ export default async function (req: Request): Promise<Response> {
     }
 
     const base44 = createClientFromRequest(req);
-    const vendors = await base44.asServiceRole.entities.Vendor.filter({ token: user_token }, undefined, 1);
-    if (vendors.length === 0) {
+    const vendor = await findVendor(base44, user_token);
+    if (!vendor) {
       return Response.json({ error: "vendor not found" }, { status: 404 });
     }
 
     const entry = await base44.asServiceRole.entities.Entry.create({
-      vendor_id: vendors[0].id,
+      vendor_id: vendor.id,
       type,
       item: item.trim(),
       category: category ? String(category).trim() : "otros",
@@ -68,14 +54,13 @@ export default async function (req: Request): Promise<Response> {
       date: newYorkDate(date),
     });
 
-    const dollars = (amountCents / 100).toFixed(2);
     const label = type === "sale" ? "venta" : "gasto";
     return Response.json({
       ok: true,
       entry_id: entry.id,
       amount_cents: amountCents,
       date: entry.date,
-      message: `Anotado: ${label} de ${entry.item}, $${dollars}.`,
+      message: `Anotado: ${label} de ${entry.item}, ${formatDollars(amountCents)}.`,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
