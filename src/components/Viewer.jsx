@@ -11,6 +11,14 @@ import { AGENT_ID, fetchLedger, isNewVendor } from '@/lib/ledger';
 const CELEBRATE_MS = 1200;
 const STAMP_MS = 4000;
 
+// elevenlabs emotion tags like "[happy]" are for the voice, not the reader
+const withoutVoiceTags = (text) =>
+  text
+    .replace(/\[[^\]\n]*\]/g, '')
+    .replace(/\s+([.,;:!?])/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
 const statementInUrl = () => window.location.hash === '#estado';
 
 // base44's "made with" badge sits in the bottom-right corner on its free plan
@@ -90,7 +98,7 @@ export function Viewer({ token, initial }) {
   const { startSession, endSession, status, isSpeaking } = useConversation({
     onMessage: ({ message, source, role }) => {
       if (source !== 'ai' && role !== 'agent') return;
-      setBubble(message);
+      setBubble(withoutVoiceTags(message));
       refetch();
     },
     // the entry is saved here, a moment before moni says so
