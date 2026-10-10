@@ -24,3 +24,6 @@ dist
 .agents/
 CLAUDE.md
 DESIGN_SPEC.md
+
+# Local setup notes with secrets
+elevenlabs-setup.md
