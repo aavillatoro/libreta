@@ -1,14 +1,20 @@
 # Libreta
 
-Bookkeeping by voice, for vendors who get paid in cash. A vendor talks to Moni, a Spanish-speaking ElevenLabs voice agent, in the web app. Code saves every entry and does all the math. The vendor can create an income and expense statement in English for a lender, benefits office, or tax preparer.
+Let cash vendors talk their way to a paper trail. Speak in Spanish, get a P&L in English. Built with ElevenLabs + Base44.
 
-Built at the Latinos x AI Hackathon NYC (October 10, 2026), Finance track.
+**Try it out:** open https://libreta-942cd7e9.base44.app, tap "Ver demo" to see Doña Rosa's libreta, tap "Hablar con Moni" and tell her what you sold, or tap "Empezar mi libreta" to start your own.
+
+A vendor talks to Moni, a Spanish-speaking ElevenLabs voice agent, in the web app. Code saves every entry and does all the math. The vendor can create an income and expense statement in English for a lender, benefits office, or tax preparer.
+
+Built at the Latinos x AI Hackathon NYC (October 10, 2026), Finance track. Devpost: https://devpost.com/software/libreta
 
 ## How Libreta uses Base44
 
 - Database: the Vendor and Entry entities store every sale and expense in cents, and Base44 timestamps each record. Both are locked, so the browser can't read them directly; only backend functions can.
-- Backend functions as Moni's tools: add-entry, correct-entry, and get-totals each have their own HTTP endpoint. The ElevenLabs agent calls them mid-conversation, protected by a shared secret stored in Base44 secrets. The functions do all the math, convert dollars to cents, and turn "today" or "yesterday" into a date in New York time.
-- Ledger and statements: a get-ledger function returns a vendor's entries and totals only for their private token, and the statement is built from those saved records.
+- Six backend functions, each with its own HTTP endpoint: add-entry, correct-entry, get-totals, get-ledger, get-statement, and create-vendor.
+- Moni's tools: the ElevenLabs agent calls add-entry, correct-entry, and get-totals mid-conversation, protected by a shared secret stored in Base44 secrets. The functions do all the math, convert dollars to cents, and turn "today" or "yesterday" into a date in New York time.
+- Ledger and statements: get-ledger and get-statement return a vendor's entries and totals only for their private token. The statement is built from those saved records.
+- New vendors: create-vendor makes a vendor with a long random token, which becomes their private link.
 - Hosting: the React app is deployed on Base44 at https://libreta-942cd7e9.base44.app.
 - Workflow: built with the Base44 CLI and Base44's agent skills in Claude Code, so the entities, functions, and site are all code in the public repo.
 
@@ -39,11 +45,10 @@ Built at the Latinos x AI Hackathon NYC (October 10, 2026), Finance track.
 - create-vendor(business_name, owner_name) → creates a vendor with a new random token and returns it. Open to anyone; it only creates.
 - get-statement(user_token, period) → income by item, expenses by category, net profit, and every entry for the last 1, 3, or 12 full calendar months, calculated in code. Same key.
 
-**Web app (two screens)**
-- Viewer: opened by a private link with the user's token. Moni's image, a passbook-style hero card (sales, expenses, saldo), a notebook-style ledger, and a talk button. The page passes user_token to the agent as a dynamic variable and reloads the ledger from get-ledger after each Moni message.
-- Statement: "Crear mi estado de cuenta" → préstamo (1 month), beneficios o vivienda (3 months), impuestos (12 months). Income and expenses by category, net profit, appendix of all entries. English by default, Spanish toggle, print-friendly page to save as PDF.
-- "Empezar mi libreta" button: asks for a business name and a first name or nickname, then opens the new vendor's private link.
-- "Ver demo" button: opens a sample vendor with 3 months of labeled sample entries, created by `scripts/seed-demo.ts`.
+**Web app**
+- Start screen: shown when the link has no token. "Empezar mi libreta" asks for a business name and a first name or nickname, then opens the new vendor's private link. "Ver demo" opens Quesadillas Doña Rosa, a sample vendor with 3 months of labeled sample entries created by `scripts/seed-demo.ts`.
+- Ledger: opened by a private link, `/?v=<token>`. Animated Moni with a speech bubble, a passbook-style hero card (ventas, gastos, ganancia), a notebook-style ledger with today on top and earlier days under date headers, and the "Hablar con Moni" button. The page passes user_token to the agent as a dynamic variable and reloads the ledger from get-ledger after each Moni message; new entries get an "Anotado" stamp.
+- Statement: "Crear mi estado de cuenta" → préstamo (1 month), beneficios o vivienda (3 months), impuestos (12 months). An English document with business name, owner, period, income by item, expenses by category, net profit, and an appendix of all entries. "Guardar PDF" opens a print-friendly page.
 
 **Privacy:** no location, legal name, ID, or immigration questions. Private random-token links. Vendors decide who sees their statements.
 
