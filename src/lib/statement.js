@@ -37,3 +37,9 @@ export function periodLabel({ start, end }) {
   if (a.year === b.year) return `${a.monthName} ${a.day} – ${b.monthName} ${b.day}, ${a.year}`;
   return `${longDate(start)} – ${longDate(end)}`;
 }
+
+// "2026-10-10" -> "noviembre"
+export function nextMonthName(date) {
+  const [year, month] = date.split('-').map(Number);
+  return new Intl.DateTimeFormat('es', { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(year, month, 1)));
+}

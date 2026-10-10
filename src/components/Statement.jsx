@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CalendarDays, Check, ChevronLeft, Download, Home, Landmark } from 'lucide-react';
 import { entryTime, fetchStatement, money } from '@/lib/ledger';
-import { capitalize, categoryLabel, longDate, periodLabel, shortDate } from '@/lib/statement';
+import { capitalize, categoryLabel, longDate, nextMonthName, periodLabel, shortDate } from '@/lib/statement';
 
 const PURPOSES = [
   { period: '1m', title: 'Un préstamo', range: 'Último mes', Icon: Landmark },
@@ -13,7 +13,6 @@ function Lines({ heading, lines, total, totalLabel }) {
   return (
     <>
       <h3 className="mt-5 pb-1 text-sm font-bold uppercase tracking-widest border-b-2 border-ink">{heading}</h3>
-      {lines.length === 0 && <p className="py-1.5 text-soft">No entries in this period</p>}
       {lines.map((line) => (
         <div key={line.label} className="flex justify-between gap-3 py-1.5">
           <span>{line.label}</span>
@@ -166,6 +165,12 @@ export function Statement({ token, onBack }) {
       {statement === 'error' && <p className="no-print text-lg">No pudimos crear tu estado de cuenta. Intenta otra vez.</p>}
       {ready && (
         <>
+          {statement.entries.length === 0 && (
+            <p className="no-print bg-mustard-light border-2 border-mustard rounded-xl px-4 py-3 text-lg">
+              Los estados de cuenta cubren meses completos. Lo que anotes este mes aparecerá a partir del 1 de{' '}
+              {nextMonthName(statement.generated)}.
+            </p>
+          )}
           <Summary statement={statement} />
           <button
             type="button"
