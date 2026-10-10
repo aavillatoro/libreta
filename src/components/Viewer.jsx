@@ -121,8 +121,8 @@ export function Viewer({ token, initial }) {
   const talkButton = <TalkButton status={status} onStart={start} onEnd={endSession} />;
 
   return (
-    // extra room at the bottom so the last rows can scroll clear of the dock
-    <main className={`min-h-screen max-w-md mx-auto px-5 pt-7 space-y-7 ${active ? 'pb-64' : 'pb-8'}`}>
+    // room at the bottom for base44's corner badge, and for the dock during a conversation
+    <main className={`min-h-screen max-w-md mx-auto px-5 pt-7 space-y-7 ${active ? 'pb-64' : 'pb-24'}`}>
       {statementOpen ? (
         <Statement token={token} onBack={closeStatement} />
       ) : (

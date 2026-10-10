@@ -18,7 +18,7 @@ export default function App() {
 
   if (failed) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center gap-5 px-6 text-center text-xl">
+      <main className="min-h-screen flex flex-col items-center justify-center gap-5 px-6 pb-24 text-center text-xl">
         <p>No pudimos abrir tu libreta.</p>
         <button
           type="button"
@@ -31,7 +31,7 @@ export default function App() {
     );
   }
   if (ledger === undefined) {
-    return <main className="min-h-screen flex items-center justify-center text-xl text-soft">Abriendo tu libreta…</main>;
+    return <main className="min-h-screen flex items-center justify-center pb-24 text-xl text-soft">Abriendo tu libreta…</main>;
   }
   if (ledger === null) return <StartScreen notFound={Boolean(token)} />;
 
