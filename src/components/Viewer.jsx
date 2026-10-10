@@ -46,6 +46,7 @@ export function Viewer({ token, initial }) {
   const [freshIds, setFreshIds] = useState(() => new Set());
   const [celebrating, setCelebrating] = useState(false);
   const [bubble, setBubble] = useState(null);
+  const [talkProblem, setTalkProblem] = useState(null);
   const knownIds = useRef(new Set(initial.entries.map((e) => e.id)));
   const latestRequest = useRef(0);
   const [statementOpen, setStatementOpen] = useState(statementInUrl);
@@ -103,16 +104,22 @@ export function Viewer({ token, initial }) {
     },
     // the entry is saved here, a moment before moni says so
     onAgentToolResponse: () => refetch(),
-    onError: () => setBubble('No pude conectarme. Intenta otra vez.'),
+    onError: () => setTalkProblem('No pude conectarme. Intenta otra vez.'),
   });
 
   const start = async () => {
+    setTalkProblem(null);
+    // browsers inside other apps often have no microphone access at all
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setTalkProblem('Este navegador no deja usar el micrófono. Abre esta página en Safari o Chrome.');
+      return;
+    }
     try {
       // ask for the mic up front so a denial gets a message in spanish
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       stream.getTracks().forEach((track) => track.stop());
     } catch {
-      setBubble('Necesito tu micrófono para escucharte. Actívalo y toca el botón otra vez.');
+      setTalkProblem('Necesito tu micrófono para escucharte. Actívalo y toca el botón otra vez.');
       return;
     }
     startSession({
@@ -166,6 +173,12 @@ export function Viewer({ token, initial }) {
             </button>
             {/* during a conversation the button moves to the dock; keep its place so the page doesn't jump */}
             {active ? <div className="h-[4.25rem]" /> : talkButton}
+            {/* shown here because moni's bubble is off screen by the time the button is tapped on a phone */}
+            {talkProblem && !active && (
+              <p role="alert" className="bg-mustard-light border-2 border-mustard rounded-xl px-4 py-3 text-lg">
+                {talkProblem}
+              </p>
+            )}
           </div>
 
           <EarlierLedger today={ledger.today} entries={ledger.entries} freshIds={freshIds} />

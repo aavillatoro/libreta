@@ -59,8 +59,9 @@ function NewVendorForm() {
 export function StartScreen({ notFound }) {
   const [starting, setStarting] = useState(false);
   return (
-    <main className="min-h-screen max-w-md mx-auto px-6 pt-12 pb-24 flex flex-col items-center justify-center text-center">
-      <Moni state="idle" className="!w-44 !h-44" />
+    // smaller on short phones so base44's corner badge doesn't sit on the buttons
+    <main className="min-h-screen max-w-md mx-auto px-6 pt-12 [@media(max-height:640px)]:pt-4 pb-24 flex flex-col items-center justify-center text-center">
+      <Moni state="idle" className="!w-44 !h-44 [@media(max-height:640px)]:!w-24 [@media(max-height:640px)]:!h-24" />
       <h1 className="mt-2 font-serif font-semibold text-5xl">Libreta</h1>
       <p className="mt-3 text-xl text-soft">Cuéntale a Moni lo que vendiste y lo que gastaste. Ella lo anota.</p>
       {notFound && (
