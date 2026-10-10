@@ -6,7 +6,7 @@ import { EarlierLedger, TodayLedger } from '@/components/Ledger';
 import { Moni } from '@/components/Moni';
 import { Statement } from '@/components/Statement';
 import { TalkButton } from '@/components/TalkButton';
-import { AGENT_ID, fetchLedger } from '@/lib/ledger';
+import { AGENT_ID, fetchLedger, isNewVendor } from '@/lib/ledger';
 
 const CELEBRATE_MS = 1200;
 const STAMP_MS = 4000;
@@ -131,6 +131,12 @@ export function Viewer({ token, initial }) {
             <h1 className="font-serif font-semibold text-4xl">Libreta</h1>
             <p className="text-soft">{ledger.vendor.business_name}</p>
           </header>
+
+          {isNewVendor(token) && (
+            <p className="bg-mustard-light border-2 border-mustard rounded-xl px-4 py-3 text-lg">
+              Guarda este enlace. Es la llave de tu libreta.
+            </p>
+          )}
 
           <div ref={bigMoniRef} className="flex items-center gap-2">
             <Moni state={moniState} className="-ml-3" />

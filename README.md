@@ -36,11 +36,13 @@ Built at the Latinos x AI Hackathon NYC (October 10, 2026), Finance track.
 
 **Backend functions for the web page**
 - get-ledger(user_token) → that vendor's entries plus totals calculated in code. No shared secret; the token is the key.
+- create-vendor(business_name, owner_name) → creates a vendor with a new random token and returns it. Open to anyone; it only creates.
 - get-statement(user_token, period) → income by item, expenses by category, net profit, and every entry for the last 1, 3, or 12 full calendar months, calculated in code. Same key.
 
 **Web app (two screens)**
 - Viewer: opened by a private link with the user's token. Moni's image, a passbook-style hero card (sales, expenses, saldo), a notebook-style ledger, and a talk button. The page passes user_token to the agent as a dynamic variable and reloads the ledger from get-ledger after each Moni message.
 - Statement: "Crear mi estado de cuenta" → préstamo (1 month), beneficios o vivienda (3 months), impuestos (12 months). Income and expenses by category, net profit, appendix of all entries. English by default, Spanish toggle, print-friendly page to save as PDF.
+- "Empezar mi libreta" button: asks for a business name and a first name or nickname, then opens the new vendor's private link.
 - "Ver demo" button: opens a sample vendor with 3 months of labeled sample entries, created by `scripts/seed-demo.ts`.
 
 **Privacy:** no location, legal name, ID, or immigration questions. Private random-token links. Vendors decide who sees their statements.

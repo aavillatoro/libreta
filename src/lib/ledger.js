@@ -20,6 +20,22 @@ export async function fetchLedger(token) {
   }
 }
 
+// resolves to the new vendor's private token
+export async function createVendor(businessName, ownerName) {
+  const { data } = await base44.functions.invoke('create-vendor', {
+    business_name: businessName,
+    owner_name: ownerName,
+  });
+  return data.user_token;
+}
+
+// kept out of the url so the link the vendor saves stays clean
+const NEW_VENDOR_KEY = 'libreta:nueva';
+
+export const markNewVendor = (token) => window.sessionStorage.setItem(NEW_VENDOR_KEY, token);
+
+export const isNewVendor = (token) => window.sessionStorage.getItem(NEW_VENDOR_KEY) === token;
+
 // period: 1m | 3m | 12m
 export async function fetchStatement(token, period) {
   const { data } = await base44.functions.invoke('get-statement', { user_token: token, period });
