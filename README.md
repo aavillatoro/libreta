@@ -16,7 +16,6 @@ Built at the Latinos x AI Hackathon NYC (October 10, 2026), Finance track. Devpo
 - Ledger and statements: get-ledger and get-statement return a vendor's entries and totals only for their private token. The statement is built from those saved records.
 - New vendors: create-vendor makes a vendor with a long random token, which becomes their private link.
 - Hosting: the React app is deployed on Base44 at https://libreta-942cd7e9.base44.app.
-- Workflow: built with the Base44 CLI and Base44's agent skills in Claude Code, so the entities, functions, and site are all code in the public repo.
 
 ## How it's built
 
