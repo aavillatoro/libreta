@@ -1,0 +1,26 @@
+{
+  "name": "Vendor",
+  "type": "object",
+  "properties": {
+    "business_name": {
+      "type": "string",
+      "description": "Name of the business"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "Owner's first name or nickname"
+    },
+    "token": {
+      "type": "string",
+      "description": "Long random string used in the vendor's private link"
+    }
+  },
+  "required": ["business_name", "token"],
+  // no browser access; backend functions use the service role
+  "rls": {
+    "create": false,
+    "read": false,
+    "update": false,
+    "delete": false
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Entry",
+  "type": "object",
+  "properties": {
+    "vendor_id": {
+      "type": "string",
+      "description": "Id of the Vendor this entry belongs to"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["sale", "expense"],
+      "description": "Money in or money out"
+    },
+    "item": {
+      "type": "string",
+      "description": "What was sold or bought"
+    },
+    "category": {
+      "type": "string",
+      "description": "Grouping used on the statement"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "How many, when the vendor says it"
+    },
+    "amount_cents": {
+      "type": "integer",
+      "description": "Total for the entry in cents"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Day the sale or expense happened, New York time"
+    }
+  },
+  "required": ["vendor_id", "type", "item", "amount_cents", "date"],
+  // no browser access; backend functions use the service role
+  "rls": {
+    "create": false,
+    "read": false,
+    "update": false,
+    "delete": false
+  }
+}
